@@ -1,0 +1,11 @@
+# dependencies
+node_modules/
+
+# environment variables
+.env
+
+# OS/editor junk (optional but common)
+.DS_Store
+*.log
+
+test-files/
