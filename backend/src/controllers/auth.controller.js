@@ -2,6 +2,7 @@ const { registerSchema, loginSchema } = require("../validators/auth.validator");
 const { findUserByEmail, createUser } = require("../db/queries/user.queries");
 const {hashedPassword, comparePw }=require('../utils/hash');
 const {generateToken, verifyToken }=require('../utils/jwt');
+const { createApplication } = require("../db/queries/sellerApplication.queries");
 
 async function register(req,res){
     const resultValidation = registerSchema.safeParse(req.body);
@@ -21,6 +22,9 @@ async function register(req,res){
             resultValidation.data.phoneNumber,
             resultValidation.data.role
         )
+        if (newUser.role === 'seller'){
+            await createApplication(newUser.id)
+        }
         const token = generateToken({id: newUser.id, role: newUser.role})
         const {password_hash, ...shownUserInfo}= newUser;
         return res.status(201).json({user: shownUserInfo, token})

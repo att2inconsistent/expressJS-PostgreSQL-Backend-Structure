@@ -16,12 +16,4 @@ function authenticate(req,res,next){
     }
 }
 
-// function authorize(...allowedRoles){
-//     return function(req,res,next){
-//         if(!allowedRoles){
-//             return res.status(403).json({Message: "User is not permitted"})
-//         }
-//     }
-// }
-
-module.exports=(authenticate)
+module.exports=(authenticate);
