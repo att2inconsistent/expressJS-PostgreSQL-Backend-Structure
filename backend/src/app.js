@@ -2,12 +2,14 @@ const express = require('express');
 const app = express();
 const authRoutes = require('./routes/auth.routes');
 const adminRoutes = require('./routes/admin.routes');
+const sellerRoutes= require('./routes/seller.routes');
 app.use(express.json());
 
 const pool = require('./config/db');
 
 app.use('/auth', authRoutes)
 app.use('/admin', adminRoutes)
+app.use('/seller', sellerRoutes)
 
 app.get('/test', async (req, res) => {
     try {
