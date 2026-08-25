@@ -1,11 +1,11 @@
 const pool = require('../../config/db')
 
-async function createAssignment(sellerId, standId, assignedBy) {
+async function createAssignment(sellerId, standId, assignedBy, db = pool) {
     const query={
         text:'INSERT INTO stand_assignments(seller_id, stand_id, assigned_by) VALUES ($1, $2, $3) RETURNING *',
         values:[sellerId, standId, assignedBy],
     }
-    const res=await pool.query(query)
+    const res=await db.query(query)
     return res.rows[0]
 }
 
@@ -18,12 +18,12 @@ async function getActiveAssignmentBySeller(sellerId) {
     return res.rows[0]
 }
 
-async function deactivateAssignment(assignmentId) {
+async function deactivateAssignment(assignmentId, db=pool) {
     const query={
         text:'UPDATE stand_assignments SET status = \'inactive\', unassigned_at = NOW() WHERE id = $1 RETURNING *',
         values:[assignmentId],
     }
-    const res=await pool.query(query)
+    const res=await db.query(query)
     return res.rows[0]
 }
 
