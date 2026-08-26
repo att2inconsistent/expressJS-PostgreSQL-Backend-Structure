@@ -4,7 +4,7 @@ const { getActiveAssignmentBySeller } = require("../db/queries/standAssignment.q
 
 async function getMenuItemController(req,res){
     try{
-        const standId = req.params.id
+        const standId = req.params.standId
         const callMenuItemByStand = await getMenuItemByStand(standId)
         return res.status(200).json({stand: callMenuItemByStand})
     }catch{
