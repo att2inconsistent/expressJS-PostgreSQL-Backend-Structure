@@ -59,8 +59,8 @@
         const client = await pool.connect()
 
         const {sellerId, standId} = req.body
-            const assignedBy = req.user.id
-            const existingAssignment = await getActiveAssignmentBySeller(sellerId)
+        const assignedBy = req.user.id
+        const existingAssignment = await getActiveAssignmentBySeller(sellerId)
 
         try{
             await client.query('BEGIN')
