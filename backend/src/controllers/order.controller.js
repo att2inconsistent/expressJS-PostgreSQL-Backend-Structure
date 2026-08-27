@@ -1,7 +1,8 @@
 const pool = require('../config/db');
-const { createOrder } = require('../db/queries/order.queries');
+const { createOrder, findOrderById, updateOrderStatus } = require('../db/queries/order.queries');
 const { createOrderItem } = require('../db/queries/orderItem.queries');
 const { findMenuItemById } = require('../db/queries/menu.queries');
+const { getActiveAssignmentBySeller } = require('../db/queries/standAssignment.queries');
 
 async function createOrderController(req,res) {
     const client = await pool.connect();
@@ -51,6 +52,31 @@ async function createOrderController(req,res) {
     }
 }
 
+async function updOrderStatusController(req,res) {
+    try{
+        const orderId=req.params.id
+        const {status, rejectionReason}=req.body
 
+        if (!['pending','accepted','preparing','ready','completed','rejected','cancelled'].includes(req.body.status)){
+                return res.status(400).json({error: status})
+        }
 
-module.exports={createOrderController}
+        const findOrderWithId=await findOrderById(orderId)
+        if (findOrderWithId == null){
+                return res.status(404).json({error:'order not found'})
+        }
+        const sellerActvAssgnmnt= await getActiveAssignmentBySeller(req.user.id)
+        const hasNoAssignment= !sellerActvAssgnmnt
+        const isDiffStand= sellerActvAssgnmnt && findOrderWithId.stand_id !== sellerActvAssgnmnt.stand_id
+        if (hasNoAssignment || isDiffStand){
+                return res.status(403).json({stand: 'order and stand do not match'})
+        }
+        const updOrderStat=await updateOrderStatus(status, rejectionReason, orderId)
+        return res.status(200).json({order: updOrderStat})
+    }catch(error){
+        console.error(error);
+        return res.status(500).json({message:'server error'})
+    }
+}
+
+module.exports={createOrderController, updOrderStatusController}
