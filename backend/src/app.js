@@ -4,6 +4,7 @@ const authRoutes = require('./routes/auth.routes');
 const adminRoutes = require('./routes/admin.routes');
 const sellerRoutes= require('./routes/seller.routes');
 const menuRoutes= require('./routes/menu.routes');
+const orderRoutes= require('./routes/order.routes');
 app.use(express.json());
 
 const pool = require('./config/db');
@@ -12,6 +13,7 @@ app.use('/auth', authRoutes)
 app.use('/admin', adminRoutes)
 app.use('/seller', sellerRoutes)
 app.use('/menu', menuRoutes)
+app.use('/order', orderRoutes)
 
 app.get('/test', async (req, res) => {
     try {
