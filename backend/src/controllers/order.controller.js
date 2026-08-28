@@ -1,5 +1,5 @@
 const pool = require('../config/db');
-const { createOrder, findOrderById, updateOrderStatus } = require('../db/queries/order.queries');
+const { createOrder, findOrderById, updateOrderStatus, getOrderByUser, getOrderByStand } = require('../db/queries/order.queries');
 const { createOrderItem } = require('../db/queries/orderItem.queries');
 const { findMenuItemById } = require('../db/queries/menu.queries');
 const { getActiveAssignmentBySeller } = require('../db/queries/standAssignment.queries');
@@ -79,4 +79,31 @@ async function updOrderStatusController(req,res) {
     }
 }
 
-module.exports={createOrderController, updOrderStatusController}
+async function getOrdersByUserController(req,res) {
+    try{
+        const customerOrderId=req.user.id
+        const getOrderWithUser = await getOrderByUser(customerOrderId)
+        return res.status(200).json({order:getOrderWithUser})
+    }catch(error){
+        console.error(error)
+        return res.status(500).json({message:'server error'})
+    }
+}
+
+async function getOrderByStandController(req,res) {
+    try{
+        const sellerActvAssgnmnt= await getActiveAssignmentBySeller(req.user.id)
+        const hasNoAssignment= !sellerActvAssgnmnt
+        
+        if (hasNoAssignment){
+                return res.status(403).json({stand: 'user is not assigned to any stand'})
+        }
+        const ordersForStand=await getOrderByStand(sellerActvAssgnmnt.stand_id) 
+        return res.status(200).json({order: ordersForStand})
+    }catch(error){
+        console.error(error)
+        return res.status(500).json({message:'server error'})
+    }
+}
+
+module.exports={createOrderController, updOrderStatusController,getOrdersByUserController, getOrderByStandController}
