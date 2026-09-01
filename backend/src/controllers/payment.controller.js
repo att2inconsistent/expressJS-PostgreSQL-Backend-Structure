@@ -1,4 +1,3 @@
-const pool = require('../config/db');
 const { createPaymentProof, updatePaymentProofStatus, findPaymentProofById } = require('../db/queries/paymentProof.queries');
 const { findOrderById, markOrderAsPaid} = require('../db/queries/order.queries');
 const { getActiveAssignmentBySeller } = require('../db/queries/standAssignment.queries');

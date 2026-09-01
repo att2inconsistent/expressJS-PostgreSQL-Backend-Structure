@@ -5,6 +5,7 @@ const adminRoutes = require('./routes/admin.routes');
 const sellerRoutes= require('./routes/seller.routes');
 const menuRoutes= require('./routes/menu.routes');
 const orderRoutes= require('./routes/order.routes');
+const paymentRoutes= require('./routes/payment.routes');
 app.use(express.json());
 
 const pool = require('./config/db');
@@ -14,6 +15,7 @@ app.use('/admin', adminRoutes)
 app.use('/seller', sellerRoutes)
 app.use('/menu', menuRoutes)
 app.use('/order', orderRoutes)
+app.use('/payment', paymentRoutes)
 
 app.get('/test', async (req, res) => {
     try {
