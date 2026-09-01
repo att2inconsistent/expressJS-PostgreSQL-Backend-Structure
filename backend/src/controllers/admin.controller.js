@@ -1,6 +1,6 @@
     const pool=require('../config/db')
     const { getPendingApplications, updateApplicationStatus } = require("../db/queries/sellerApplication.queries")
-    const {createStand, getAllStands, updateStandOpenStatus} = require('../db/queries/stand.queries')
+    const {createStand, getAllStands} = require('../db/queries/stand.queries')
     const {createAssignment, getActiveAssignmentBySeller, deactivateAssignment} = require('../db/queries/standAssignment.queries')
 
     async function getSellerApplication(req,res){
