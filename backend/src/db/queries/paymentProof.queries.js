@@ -24,4 +24,13 @@ async function updatePaymentProofStatus(status, reviewedBy, proofId){
     const res = await pool.query(query)
     return res.rows[0]
 }
-module.exports={createPaymentProof,getPaymentProofByOrder,updatePaymentProofStatus}
+async function findPaymentProofById(proofId){
+    const query={
+        text:'SELECT * FROM payment_proofs WHERE id = $1',
+        values:[proofId]
+    }
+    const res = await pool.query(query)
+    return res.rows[0]
+}
+
+module.exports={createPaymentProof,getPaymentProofByOrder,updatePaymentProofStatus,findPaymentProofById}

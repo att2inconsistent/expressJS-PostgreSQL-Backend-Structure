@@ -44,5 +44,13 @@ async function updateOrderStatus( status, rejectionReason=null, orderId) {
     const res = await pool.query(query)
     return res.rows[0]
 }
+async function markOrderAsPaid(orderId){
+    const query={
+        text:'UPDATE orders SET is_paid = TRUE WHERE id = $1 RETURNING *',
+        values:[orderId]
+    }
+    const res = await pool.query(query)
+    return res.rows[0]
+}
 
-module.exports={createOrder, findOrderById, getOrderByUser, getOrderByStand, updateOrderStatus}
+module.exports={createOrder, findOrderById, getOrderByUser, getOrderByStand, updateOrderStatus, markOrderAsPaid}
