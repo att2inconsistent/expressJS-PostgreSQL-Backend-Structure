@@ -1,11 +1,13 @@
 const express = require('express');
 const app = express();
+const helmet = require('helmet');
 const authRoutes = require('./routes/auth.routes');
 const adminRoutes = require('./routes/admin.routes');
 const sellerRoutes= require('./routes/seller.routes');
 const menuRoutes= require('./routes/menu.routes');
 const orderRoutes= require('./routes/order.routes');
 const paymentRoutes= require('./routes/payment.routes');
+app.use(helmet())
 app.use(express.json());
 
 const pool = require('./config/db');
