@@ -7,8 +7,10 @@ const sellerRoutes= require('./routes/seller.routes');
 const menuRoutes= require('./routes/menu.routes');
 const orderRoutes= require('./routes/order.routes');
 const paymentRoutes= require('./routes/payment.routes');
+const limiter = require('./middleware/rateLimiter');
 app.use(helmet())
 app.use(express.json());
+app.use(limiter);
 
 const pool = require('./config/db');
 
