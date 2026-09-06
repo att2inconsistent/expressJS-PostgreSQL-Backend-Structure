@@ -8,9 +8,14 @@ const menuRoutes= require('./routes/menu.routes');
 const orderRoutes= require('./routes/order.routes');
 const paymentRoutes= require('./routes/payment.routes');
 const limiter = require('./middleware/rateLimiter');
+const cors = require('cors');
+const allowedOrigins= [process.env.CLIENT_URL, process.env.SELLER_URL];
 app.use(helmet())
 app.use(express.json());
-app.use(limiter);
+app.use(cors({
+    origin: allowedOrigins,
+    credentials: true,
+}));
 
 const pool = require('./config/db');
 
