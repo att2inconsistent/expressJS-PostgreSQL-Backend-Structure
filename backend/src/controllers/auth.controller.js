@@ -4,7 +4,7 @@ const {hashedPassword, comparePw }=require('../utils/hash');
 const {generateToken, verifyToken }=require('../utils/jwt');
 const { createApplication } = require("../db/queries/sellerApplication.queries");
 
-async function register(req,res){
+async function register(req,res,next){
     const resultValidation = registerSchema.safeParse(req.body);
     if (!resultValidation.success){
         return res.status(400).json({error: resultValidation.error});
@@ -29,10 +29,10 @@ async function register(req,res){
         const {password_hash, ...shownUserInfo}= newUser;
         return res.status(201).json({user: shownUserInfo, token})
     }catch(error){
-        return res.status(500).json({message:'server error'})
+        next(error)
 }}
 
-async function login(req,res) {
+async function login(req,res,next) {
     const resultLoginValidation = loginSchema.safeParse(req.body)
     if (!resultLoginValidation.success){
         return res.status(400).json({error: resultLoginValidation.error})
@@ -52,7 +52,7 @@ async function login(req,res) {
             }
         }
     }catch(error){
-        return res.status(500).json({message:'server error'})
+        next(error)
     }
 }
 

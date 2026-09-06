@@ -2,17 +2,17 @@ const { createMenuItem, getMenuItemByStand, findMenuItemById, updateMenuItem, de
 const { getActiveAssignmentBySeller } = require("../db/queries/standAssignment.queries")
 
 
-async function getMenuItemController(req,res){
+async function getMenuItemController(req,res,next){
     try{
         const standId = req.params.standId
         const callMenuItemByStand = await getMenuItemByStand(standId)
         return res.status(200).json({stand: callMenuItemByStand})
-    }catch{
-        return res.status(500).json({message:'server error'})
+    }catch(error){
+        next(error)
     }
 }
 
-async function createMenuItemController(req,res) {
+async function createMenuItemController(req,res,next) {
     try{
         const getAssignmentBySeller= await getActiveAssignmentBySeller(req.user.id)
         if (!getAssignmentBySeller){
@@ -21,12 +21,12 @@ async function createMenuItemController(req,res) {
         const {name, desc, qty, price}=req.body
         const crtMenuItem=await createMenuItem(getAssignmentBySeller.stand_id, name,desc,qty,price)
         return res.status(200).json({item: crtMenuItem})
-    }catch{
-        return res.status(500).json({message:'server error'})
+    }catch(error){
+        next(error)
     }
 }
 
-async function updateMenuItemController(req,res) {
+async function updateMenuItemController(req,res,next) {
     try{
         const itemId = req.params.id
         const findMenuWithId=await findMenuItemById(itemId)
@@ -44,12 +44,12 @@ async function updateMenuItemController(req,res) {
             const updatedMenuItem =await updateMenuItem(updatedOne.name, updatedOne.desc, updatedOne.qty, updatedOne.price, updatedOne.isAvail, itemId)
             return res.status(200).json({item: updatedMenuItem})
         }
-    }catch{
-        return res.status(500).json({message:'server error'})
+    }catch(error){
+        next(error)
     }
 }
 
-async function deleteMenuItemController(req,res) {
+async function deleteMenuItemController(req,res,next) {
     try{
         const itemId = req.params.id
         const findMenuWithId=await findMenuItemById(itemId)
@@ -66,8 +66,8 @@ async function deleteMenuItemController(req,res) {
             const deletedMenuItem =await deleteMenuItem(itemId)
             return res.status(200).json({item: deletedMenuItem})
         }
-    }catch{
-        return res.status(500).json({message:'server error'})
+    }catch(error){
+        next(error)
     }
 }
 

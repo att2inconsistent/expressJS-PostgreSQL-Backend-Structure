@@ -3,16 +3,16 @@
     const {createStand, getAllStands} = require('../db/queries/stand.queries')
     const {createAssignment, getActiveAssignmentBySeller, deactivateAssignment} = require('../db/queries/standAssignment.queries')
 
-    async function getSellerApplication(req,res){
+    async function getSellerApplication(req,res,next){
         try{
             const application= await getPendingApplications()
             return res.status(200).json({application})
-        }catch{
-            return res.status(500).json({message:'server error'})
+        }catch(error){
+            next(error)
         }
     }
 
-    async function reviewApplication(req,res){
+    async function reviewApplication(req,res,next){
         try{
             const reviewId = req.params.id
             const { status } = req.body
@@ -26,12 +26,12 @@
                 return res.status(404).json({message: 'application not found'})
             }
             return res.status(200).json({application: updAppl})
-        }catch{
-            return res.status(500).json({message:'server error'})
+        }catch(error){
+            next(error)
         }
     }
 
-    async function createStandController(req,res){
+    async function createStandController(req,res,next){
         try{
             const logoUrl = req.body.logoUrl
             const name= req.body.name
@@ -41,21 +41,21 @@
             }
             const createNewStand = await createStand(name, logoUrl, createdBy)
             return res.status(201).json({stand: createNewStand})
-        }catch{
-            return res.status(500).json({message:'server error'})
+        }catch(error){
+            next(error)
         }
     }
 
-    async function listStandsController(req,res) {
+    async function listStandsController(req,res,next) {
         try{
             const callStands = await getAllStands()
             return res.status(200).json({stands: callStands})
-        }catch{
-            return res.status(500).json({message:'server error'})
+        }catch(error){
+            next(error)
         }
     }
 
-    async function assignSellerController(req,res) {
+    async function assignSellerController(req,res,next) {
         const client = await pool.connect()
 
         const {sellerId, standId} = req.body
@@ -73,15 +73,14 @@
             return res.status(201).json({assignment: activateNewAssignment})
         }catch(error){
             await client.query('ROLLBACK')
-            console.error(error);
-            return res.status(500).json({message:'server error'})
+            next(error)
         }finally{
             client.release()
         }
     }
 
 
-    async function deactivateAssignmentController(req,res){
+    async function deactivateAssignmentController(req,res,next){
         try{
             const assignedTo = req.params.id
             const deactivatedAssignment =await deactivateAssignment(assignedTo)
@@ -89,8 +88,8 @@
                 return res.status(404).json({message:'asignment not found'})
             }
             return res.status(200).json({assignment: deactivatedAssignment})
-        }catch{
-            return res.status(500).json({message:'server error'})
+        }catch(error){
+            next(error)
         }
     }
 

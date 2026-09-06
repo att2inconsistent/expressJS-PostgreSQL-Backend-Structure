@@ -4,7 +4,7 @@ const { createOrderItem } = require('../db/queries/orderItem.queries');
 const { findMenuItemById } = require('../db/queries/menu.queries');
 const { getActiveAssignmentBySeller } = require('../db/queries/standAssignment.queries');
 
-async function createOrderController(req,res) {
+async function createOrderController(req,res,next) {
     const client = await pool.connect();
     try{
         const {standId, paymentMthd, delivMthd, delivAddr, items}=req.body
@@ -45,14 +45,13 @@ async function createOrderController(req,res) {
         return res.status(201).json({order: createNewOrder})
     }catch(error){
         await client.query('ROLLBACK')
-        console.error(error);
-        return res.status(500).json({message:'server error'})
+        next(error)
     }finally{
         client.release()
     }
 }
 
-async function updOrderStatusController(req,res) {
+async function updOrderStatusController(req,res,next) {
     try{
         const orderId=req.params.id
         const {status, rejectionReason}=req.body
@@ -74,23 +73,21 @@ async function updOrderStatusController(req,res) {
         const updOrderStat=await updateOrderStatus(status, rejectionReason, orderId)
         return res.status(200).json({order: updOrderStat})
     }catch(error){
-        console.error(error);
-        return res.status(500).json({message:'server error'})
+        next(error)
     }
 }
 
-async function getOrdersByUserController(req,res) {
+async function getOrdersByUserController(req,res,next) {
     try{
         const customerOrderId=req.user.id
         const getOrderWithUser = await getOrderByUser(customerOrderId)
         return res.status(200).json({order:getOrderWithUser})
     }catch(error){
-        console.error(error)
-        return res.status(500).json({message:'server error'})
+        next(error)
     }
 }
 
-async function getOrderByStandController(req,res) {
+async function getOrderByStandController(req,res,next) {
     try{
         const sellerActvAssgnmnt= await getActiveAssignmentBySeller(req.user.id)
         const hasNoAssignment= !sellerActvAssgnmnt
@@ -101,8 +98,7 @@ async function getOrderByStandController(req,res) {
         const ordersForStand=await getOrderByStand(sellerActvAssgnmnt.stand_id) 
         return res.status(200).json({order: ordersForStand})
     }catch(error){
-        console.error(error)
-        return res.status(500).json({message:'server error'})
+        next(error)
     }
 }
 

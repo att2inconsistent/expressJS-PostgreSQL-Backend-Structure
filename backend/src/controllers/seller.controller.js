@@ -2,7 +2,7 @@ const { getActiveAssignmentBySeller } = require("../db/queries/standAssignment.q
 const { updateStandOpenStatus } = require("../db/queries/stand.queries")
 
 
-async function toggleStandOpenCotroller(req,res) {
+async function toggleStandOpenCotroller(req,res,next) {
     try{
         const standId= req.params.id
         const {isOpen}= req.body
@@ -20,8 +20,8 @@ async function toggleStandOpenCotroller(req,res) {
             return res.status(200).json({stand: updStandStat})
         }
 
-    }catch{
-        return res.status(500).json({message:'server error'})
+    }catch(error){
+        next(error)
     }
 }
 

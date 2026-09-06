@@ -7,6 +7,7 @@ const sellerRoutes= require('./routes/seller.routes');
 const menuRoutes= require('./routes/menu.routes');
 const orderRoutes= require('./routes/order.routes');
 const paymentRoutes= require('./routes/payment.routes');
+const errorHandler = require('./middleware/errorHandler');
 const limiter = require('./middleware/rateLimiter');
 const cors = require('cors');
 const allowedOrigins= [process.env.CLIENT_URL, process.env.SELLER_URL];
@@ -19,12 +20,12 @@ app.use(cors({
 
 const pool = require('./config/db');
 
-app.use('/auth', authRoutes)
-app.use('/admin', adminRoutes)
-app.use('/seller', sellerRoutes)
-app.use('/menu', menuRoutes)
-app.use('/order', orderRoutes)
-app.use('/payment', paymentRoutes)
+app.use('/auth', authRoutes);
+app.use('/admin', adminRoutes);
+app.use('/seller', sellerRoutes);
+app.use('/menu', menuRoutes);
+app.use('/order', orderRoutes);
+app.use('/payment', paymentRoutes);
 
 app.get('/test', async (req, res) => {
     try {
@@ -36,5 +37,6 @@ app.get('/test', async (req, res) => {
         res.status(500).json({ message: 'Database connection failed', error: error.message });
     }
 })
+app.use(errorHandler);
 
 module.exports = app;

@@ -2,7 +2,7 @@ const { createPaymentProof, updatePaymentProofStatus, findPaymentProofById } = r
 const { findOrderById, markOrderAsPaid} = require('../db/queries/order.queries');
 const { getActiveAssignmentBySeller } = require('../db/queries/standAssignment.queries');
 
-async function uploadPaymentProofController(req,res) {
+async function uploadPaymentProofController(req,res, next) {
     try{
         const { orderId} = req.body;
         const file = req.file;
@@ -19,11 +19,10 @@ async function uploadPaymentProofController(req,res) {
         const paymentProof = await createPaymentProof(orderId, imgUrl);
         return res.status(201).json({ message: 'Payment proof uploaded successfully', paymentProof });
     }catch(error){
-        console.error('Error creating payment proof:', error);
-        res.status(500).json({ error: 'Internal server error' });
+        next(error);
     }
 }
-async function reviewPaymentProofController(req,res) {
+async function reviewPaymentProofController(req,res,next) {
     try{
         const proofId = req.params.id;
         const { status } = req.body;
@@ -51,8 +50,7 @@ async function reviewPaymentProofController(req,res) {
             return res.status(200).json({ message: 'Payment proof reviewed successfully', paymentProof: updatedProof });
         }
     }catch(error){
-        console.error('Error reviewing payment proof:', error);
-        res.status(500).json({ error: 'Internal server error' });
+        next(error);
     }
 }
 module.exports = { uploadPaymentProofController, reviewPaymentProofController}
