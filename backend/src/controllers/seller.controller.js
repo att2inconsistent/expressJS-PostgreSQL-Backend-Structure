@@ -1,5 +1,6 @@
 const { getActiveAssignmentBySeller } = require("../db/queries/standAssignment.queries")
 const { updateStandOpenStatus } = require("../db/queries/stand.queries")
+const { findApplicationByUserId } = require('./db/queries/sellerApplication.queries')
 
 
 async function toggleStandOpenCotroller(req,res,next) {
@@ -23,6 +24,19 @@ async function toggleStandOpenCotroller(req,res,next) {
     }catch(error){
         next(error)
     }
+
+    async function getMyApplicationController(req, res, next){
+        try{
+            const userId=req.user.id
+            const myApplication= await findApplicationByUserId(userId)
+            if(!myApplication){
+                return res.status(404).json({message: 'application not found'})
+            }
+            return res.status(200).json({application: myApplication})
+        }catch(error){
+            next(error)
+        }
+    }
 }
 
-module.exports={toggleStandOpenCotroller}
+module.exports={toggleStandOpenCotroller, getMyApplicationController}
