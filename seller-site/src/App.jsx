@@ -1,6 +1,7 @@
 
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
+import ProtectedRoute from "./routes/ProtectedRoute";
 
 import Login from "./pages/Login";
 import Dashboard from "./pages/seller/Dashboard";
@@ -15,14 +16,17 @@ import SellerApplications from "./pages/admin/SellerApplications";
 
 const router = createBrowserRouter ([
   { path: '/login', element: <Login /> },
+  { element: <ProtectedRoute />,
+    children: [
     { path: '/dashboard', element: <Dashboard /> },
     { path: '/pending-approval', element: <PendingApproval /> },
     { path: '/menu', element: <ManageMenu /> },
     { path: '/orders', element: <IncomingOrders /> },
     { path: '/payments', element: <ReviewPayments /> },
     { path: '/admin/applications', element: <SellerApplications /> },
-    { path: '/admin/stands', element: <ManageStands /> },
+    { path: '/admin/stands', element: <ManageStands /> }, 
     { path: '/admin/assign', element: <AssignSellers /> },
+  ]}
 ])
 
 function App() {
