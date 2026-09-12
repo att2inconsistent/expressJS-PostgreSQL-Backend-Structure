@@ -1,6 +1,6 @@
 const { getActiveAssignmentBySeller } = require("../db/queries/standAssignment.queries")
 const { updateStandOpenStatus } = require("../db/queries/stand.queries")
-const { findApplicationByUserId } = require('./db/queries/sellerApplication.queries')
+const { findApplicationByUserId } = require('../db/queries/sellerApplication.queries')
 
 
 async function toggleStandOpenCotroller(req,res,next) {
@@ -24,8 +24,9 @@ async function toggleStandOpenCotroller(req,res,next) {
     }catch(error){
         next(error)
     }
+}
 
-    async function getMyApplicationController(req, res, next){
+async function getMyApplicationController(req, res, next){
         try{
             const userId=req.user.id
             const myApplication= await findApplicationByUserId(userId)
@@ -37,6 +38,5 @@ async function toggleStandOpenCotroller(req,res,next) {
             next(error)
         }
     }
-}
 
 module.exports={toggleStandOpenCotroller, getMyApplicationController}
