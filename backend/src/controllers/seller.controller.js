@@ -39,4 +39,16 @@ async function getMyApplicationController(req, res, next){
         }
     }
 
-module.exports={toggleStandOpenCotroller, getMyApplicationController}
+async function getMyAssignmentController(req, res, next) {
+    try {
+        const assignment = await getActiveAssignmentBySeller(req.user.id);
+        if (!assignment) {
+            return res.status(404).json({ message: 'No active assignment found' });
+        }
+        return res.status(200).json({ assignment });
+    } catch (error) {
+        next(error);
+    }
+}
+
+module.exports={toggleStandOpenCotroller, getMyApplicationController, getMyAssignmentController}
