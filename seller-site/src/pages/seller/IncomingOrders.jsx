@@ -9,8 +9,8 @@ function IncomingOrders() {
 
     async function fetchOrders() {
         try {
-            const response = await api.get('/seller/orders');
-            setOrders(response.data.orders);
+            const response = await api.get('/order/stand');
+            setOrders(response.data.order);
         } catch (err) {
             console.error(err);
         } finally {
@@ -25,8 +25,7 @@ function IncomingOrders() {
     async function handleStatusChange(orderId, newStatus) {
         try{
             await api.patch(`/order/${orderId}/status`, { status: newStatus });
-
-
+            fetchOrders();
         }catch(err){
             console.error(err);
         }
@@ -43,7 +42,7 @@ function IncomingOrders() {
             {orders.map((order) => (
                 <div key={order.id}>
                     <p>Order #{order.id} — {order.status} — Rp{order.total_price}</p>
-                    <select value={order.status}onChange={(e) => handleStatusChange(order.id, e.target.value)}>
+                    <select value={order.status} onChange={(e) => handleStatusChange(order.id, e.target.value)}>
                         {STATUS_OPTIONS.map((status) => (
                             <option key={status} value={status}>
                                 {status}
